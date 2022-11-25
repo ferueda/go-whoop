@@ -25,8 +25,8 @@ func TestNewClient(t *testing.T) {
 func TestNewRequest(t *testing.T) {
 	c := NewClient(nil)
 
-	url := baseURL + "/test"
-	req, _ := c.newRequest(context.Background(), "GET", url, nil)
+	url := baseURL + "developer/" + apiVersion + "/test"
+	req, _ := c.newRequest(context.Background(), http.MethodGet, "/test", nil)
 
 	if got, want := req.URL.String(), url; got != want {
 		t.Errorf("NewRequest(%q) URL is %v, want %v", url, got, want)
