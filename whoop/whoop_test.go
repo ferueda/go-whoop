@@ -2,9 +2,11 @@ package whoop
 
 import (
 	"context"
+	"io"
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 )
@@ -100,6 +102,38 @@ func TestNewResponse(t *testing.T) {
 	}
 	if got, want := response.Rate.Reset, now().Add(time.Duration(30)*time.Second); got != want {
 		t.Errorf("rate.Reset is %v, want %v", got, want)
+	}
+}
+
+func TestCheckResponse(t *testing.T) {
+	testCases := []struct {
+		statusCode int
+		body       string
+		want       error
+	}{
+		{200, "", nil},
+		{100, "test error", &Error{Code: 100, Message: "test error"}},
+		{300, "test error", &Error{Code: 300, Message: "test error"}},
+		{400, "test error", &Error{Code: 400, Message: "test error"}},
+		{500, "test error", &Error{Code: 500, Message: "test error"}},
+	}
+
+	for _, test := range testCases {
+		res := http.Response{
+			Header:     http.Header{},
+			Body:       io.NopCloser(strings.NewReader(test.body)),
+			StatusCode: test.statusCode,
+		}
+		res.Header.Set(headerRateRemaining, "60")
+		res.Header.Set(headerRateReset, "30")
+
+		got := checkResponse(&res)
+		if test.statusCode != 200 && got.Error() != test.want.Error() {
+			t.Errorf("checkResponse is %v, want %v", got, test.want)
+		}
+		if test.statusCode >= 200 && test.statusCode <= 299 && got != test.want {
+			t.Errorf("checkResponse is %v, want %v", got, test.want)
+		}
 	}
 }
 
