@@ -43,3 +43,18 @@ type Cycle struct {
 		MaxHeartRate     int     `json:"max_heart_rate"`
 	} `json:"score"`
 }
+
+// ListAll lists all physiological cycles for the authenticated user.
+// Results are paginated and sorted by start time in descending order.
+//
+// WHOOP API docs: https://developer.whoop.com/api#tag/Cycle/operation/getCycleCollection
+func (s *CycleService) ListAll(ctx context.Context) ([]Cycle, error) {
+	var res struct {
+		Records   []Cycle `json:"records"`
+		NextToken *string `json:"next_token"`
+	}
+	if err := s.client.get(ctx, cycleEndpoint, &res); err != nil {
+		return nil, err
+	}
+	return res.Records, nil
+}
