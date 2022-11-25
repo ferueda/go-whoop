@@ -16,7 +16,8 @@ import (
 )
 
 const (
-	baseURL = "https://api.prod.whoop.com/"
+	baseURL    = "https://api.prod.whoop.com/"
+	apiVersion = "v1"
 
 	headerRateLimit     = "X-RateLimit-Limit"
 	headerRateRemaining = "X-RateLimit-Remaining"
@@ -29,14 +30,16 @@ type service struct {
 
 // Client manages communication with the WHOOP API.
 type Client struct {
-	http    *http.Client // HTTP client used to communicate with the API.
-	baseURL *url.URL     // Base URL for API requests.
+	http       *http.Client // HTTP client used to communicate with the API.
+	baseURL    *url.URL     // Base URL for API requests.
+	apiVersion string
 
 	rateLimit Rate // Rate limit for the client as determined by the most recent API call.
 
 	shared service // Reuse a single struct instead of allocating one for each service on the heap.
 
 	// Services used for talking to different parts of the API.
+	Cycle *CycleService
 }
 
 // NewClient returns a new WHOOP API client.
@@ -51,15 +54,16 @@ func NewClient(httpClient *http.Client) *Client {
 	}
 	baseURL, _ := url.Parse(baseURL)
 
-	c := &Client{http: httpClient, baseURL: baseURL}
+	c := &Client{http: httpClient, baseURL: baseURL, apiVersion: apiVersion}
 	c.shared.client = c
+	c.Cycle = (*CycleService)(&c.shared)
 	return c
 }
 
 // newRequest creates a new API request with context. If specified,
 // the value pointed to by body is JSON encoded and included in the request body.
 func (c *Client) newRequest(ctx context.Context, method, url string, body interface{}) (*http.Request, error) {
-	u, err := c.baseURL.Parse(url)
+	u, err := c.baseURL.Parse("developer" + "/" + c.apiVersion + url)
 	if err != nil {
 		return nil, err
 	}
@@ -93,8 +97,7 @@ type Response struct {
 
 	// The WHOOP API implements pagination through cursors.
 	// This means that a token points directly to the next set of records.
-	//
-	// For more details visit https://developer.whoop.com/docs/developing/pagination
+	// For more details check https://developer.whoop.com/docs/developing/pagination
 	NextPageToken string
 
 	Rate Rate
@@ -122,6 +125,26 @@ func newResponse(r *http.Response) *Response {
 // 	}
 // 	return exp
 // }
+
+// checkResponse checks the API response for errors, and returns them if any.
+// API response are considered an error if it has
+// a status 200 > code >299.
+func checkResponse(r *Response) error {
+	if r.StatusCode >= 200 && r.StatusCode <= 299 {
+		return nil
+	}
+	data, err := io.ReadAll(r.Body)
+	if err != nil {
+		return &Error{
+			Code:    http.StatusInternalServerError,
+			Message: "could not decode error",
+		}
+	}
+	return &Error{
+		Code:    r.StatusCode,
+		Message: string(data),
+	}
+}
 
 // Rate represents the rate limit for the current client.
 // After an API key's rate limit has been reached or exceeded,
@@ -152,42 +175,6 @@ func parseRateLimit(r *http.Response) Rate {
 	return rate
 }
 
-// do sends the request to the API.
-// The response body will be unmarshalled into v,
-// or return an error if an API error ocurred.
-func (c *Client) do(req *http.Request, v any) (*Response, error) {
-	if err := c.checkRateLimit(req); err != nil {
-		return &Response{
-			Response: err.Response,
-			Rate:     err.Rate,
-		}, err
-	}
-
-	resp, err := c.http.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	response := newResponse(resp)
-	defer response.Body.Close()
-	c.rateLimit = response.Rate
-	return response, json.NewDecoder(response.Body).Decode(v)
-}
-
-// get makes a GET request to the given url. The response body will be
-// unmarshalled into v.
-func (c *Client) get(ctx context.Context, url string, v any) error {
-	req, err := c.newRequest(ctx, "GET", url, nil)
-	if err != nil {
-		return err
-	}
-	_, err = c.do(req, v)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 // checkRateLimit validates if API rate limits have been
 // reached or exceeded, for the current client.
 // It returns a RateLimitError with a fake response value if
@@ -212,6 +199,49 @@ func (c *Client) checkRateLimit(req *http.Request) *RateLimitError {
 		}
 	}
 	return nil
+}
+
+// do sends the request to the API.
+// The response body will be unmarshalled into v,
+// or return an error if an API error ocurred.
+func (c *Client) do(req *http.Request, v any) error {
+	if err := c.checkRateLimit(req); err != nil {
+		return err
+	}
+	resp, err := c.http.Do(req)
+	if err != nil {
+		return err
+	}
+
+	response := newResponse(resp)
+	defer response.Body.Close()
+	err = checkResponse(response)
+	if err != nil {
+		return err
+	}
+
+	c.rateLimit = response.Rate
+	return json.NewDecoder(response.Body).Decode(v)
+}
+
+// get makes a GET request to the given url. The response body will be
+// unmarshalled into v.
+func (c *Client) get(ctx context.Context, url string, v any) error {
+	req, err := c.newRequest(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return err
+	}
+	return c.do(req, v)
+}
+
+// Error represents an error returned by the WHOOP API.
+type Error struct {
+	Code    int    `json:"code"`    // The HTTP status code.
+	Message string `json:"message"` // A short description of the error.
+}
+
+func (r *Error) Error() string {
+	return fmt.Sprintf("%v error. %v", r.Code, r.Message)
 }
 
 // RateLimitError occurs when the API returns 429 Too Many Requests response
