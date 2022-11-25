@@ -129,7 +129,7 @@ func newResponse(r *http.Response) *Response {
 // checkResponse checks the API response for errors, and returns them if any.
 // API response are considered an error if it has
 // a status 200 > code >299.
-func checkResponse(r *Response) error {
+func checkResponse(r *http.Response) error {
 	if r.StatusCode >= 200 && r.StatusCode <= 299 {
 		return nil
 	}
@@ -213,9 +213,9 @@ func (c *Client) do(req *http.Request, v any) error {
 		return err
 	}
 
+	defer resp.Body.Close()
+	err = checkResponse(resp)
 	response := newResponse(resp)
-	defer response.Body.Close()
-	err = checkResponse(response)
 	if err != nil {
 		return err
 	}
