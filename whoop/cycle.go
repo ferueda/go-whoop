@@ -48,12 +48,17 @@ type Cycle struct {
 // Results are paginated and sorted by start time in descending order.
 //
 // WHOOP API docs: https://developer.whoop.com/api#tag/Cycle/operation/getCycleCollection
-func (s *CycleService) ListAll(ctx context.Context) ([]Cycle, error) {
+func (s *CycleService) ListAll(ctx context.Context, params *RequestParams) ([]Cycle, error) {
+	u, err := addParams(cycleEndpoint, params)
+	if err != nil {
+		return nil, err
+	}
+
 	var res struct {
 		Records   []Cycle `json:"records"`
 		NextToken *string `json:"next_token"`
 	}
-	if err := s.client.get(ctx, cycleEndpoint, &res); err != nil {
+	if err = s.client.get(ctx, u, &res); err != nil {
 		return nil, err
 	}
 	return res.Records, nil
