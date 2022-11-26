@@ -41,8 +41,8 @@ If you have an OAuth2 access token, you can use it with the OAuth2 package like:
 
 ```go
 import (
-  "golang.org/x/oauth2"
-  "github.com/ferueda/go-whoop/whoop"
+    "golang.org/x/oauth2"
+    "github.com/ferueda/go-whoop/whoop"
 )
 
 func main() {
