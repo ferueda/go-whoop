@@ -59,7 +59,7 @@ func main() {
     )
 
     client := github.NewClient(oauth2.NewClient(ctx, ts))
-    cycles, _ := client.Cycle.ListAll(ctx), nil
+    cycles, _ := client.Cycle.ListAll(ctx, nil)
 }
 ```
 
