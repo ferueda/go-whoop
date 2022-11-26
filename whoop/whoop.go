@@ -101,9 +101,6 @@ type Response struct {
 	NextPageToken string
 
 	Rate Rate
-
-	// token's expiration date
-	TokenExpiration time.Time
 }
 
 // newResponse creates a new Response for the provided http.Response.
@@ -114,24 +111,20 @@ func newResponse(r *http.Response) *Response {
 	return &response
 }
 
-// TODO
-// parseTokenExpiration parses the TokenExpiration related headers.
-// func parseTokenExpiration(r *http.Response) Timestamp {
-// 	var exp Timestamp
-// 	if v := r.Header.Get(headerTokenExpiration); v != "" {
-// 		if t, err := time.Parse("2006-01-02 03:04:05 MST", v); err == nil {
-// 			exp = Timestamp{t.Local()}
-// 		}
-// 	}
-// 	return exp
-// }
-
 // checkResponse checks the API response for errors, and returns them if any.
 // API response are considered an error if it has
 // a status 200 > code >299.
 func checkResponse(r *http.Response) error {
 	if r.StatusCode >= 200 && r.StatusCode <= 299 {
 		return nil
+	}
+	if r.StatusCode == http.StatusTooManyRequests {
+		rateLimit := parseRateLimit(r)
+		return &RateLimitError{
+			Rate:     rateLimit,
+			Response: r,
+			Message:  fmt.Sprintf("API rate limit has been reached or exceeded. Please try again after %v", rateLimit.Reset.Format("2006-01-02T15:04:05")),
+		}
 	}
 	data, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -195,7 +188,7 @@ func (c *Client) checkRateLimit(req *http.Request) *RateLimitError {
 		return &RateLimitError{
 			Rate:     c.rateLimit,
 			Response: resp,
-			Message:  fmt.Sprintf("API rate limit has been reached or exceeded. Please try again after %v.", c.rateLimit.Reset.Format("2006-01-02T15:04:05")),
+			Message:  fmt.Sprintf("API rate limit has been reached or exceeded. Please try again after %v", c.rateLimit.Reset.Format("2006-01-02T15:04:05")),
 		}
 	}
 	return nil
@@ -219,7 +212,6 @@ func (c *Client) do(req *http.Request, v any) error {
 	if err != nil {
 		return err
 	}
-
 	c.rateLimit = response.Rate
 	return json.NewDecoder(response.Body).Decode(v)
 }
