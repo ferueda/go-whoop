@@ -20,19 +20,11 @@ import "github.com/ferueda/go-whoop/whoop"
 ```
 Create a new client, then use the various services on the client to access different parts of the API. For example:
 ```go
-import (
-    "context"
-    
-    "github.com/ferueda/go-whoop/whoop"
-)
+client := whoop.NewClient(nil)
+ctx := context.Background()
 
-func main() {
-    client := whoop.NewClient(nil)
-    ctx := context.Background()
-
-    // list all cycles for the authenticated user
-    cycles, _ := client.Cycle.ListAll(ctx, nil)
-}
+// list all cycles for the authenticated user
+cycles, _ := client.Cycle.ListAll(ctx, nil)
 
 ```
 Some API methods have optional parameters that can be passed. For example:
@@ -42,7 +34,7 @@ ctx := context.Background()
 
 
 // list all cycles for the authenticated user in the last 36 hours
-params := &whoop.RequestParams{Start: time.Now().Add(time.Hour * -36)}
+params := whoop.RequestParams{Start: time.Now().Add(time.Hour * -36)}
 cycles, _ := client.Cycle.ListAll(ctx, &params)
 ```
 ## Authentication
