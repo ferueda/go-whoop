@@ -27,7 +27,7 @@ func main() {
     ctx := context.Background()
 
     // list all cycles for the authenticated user
-    cycles, err := client.Cycle.ListAll(ctx, nil)
+    cycles, _ := client.Cycle.ListAll(ctx, nil)
 }
 
 ```
@@ -39,7 +39,7 @@ ctx := context.Background()
 
 // list all cycles for the authenticated user in the last 36 hours
 params := &whoop.RequestParams{Start: time.Now().Add(time.Hour * -36)}
-cycles, _, err := client.Cycle.ListAll(ctx, &params)
+cycles, _ := client.Cycle.ListAll(ctx, &params)
 ```
 ## Authentication
 The client does not handle authentication for you. Instead, you can provide `whoop.NewClient()` with an `http.Client` of your own that can handle authentication for you.
@@ -61,7 +61,7 @@ func main() {
     )
 
     client := github.NewClient(oauth2.NewClient(ctx, ts))
-    cycles, err := client.Cycle.ListAll(ctx), nil
+    cycles, _ := client.Cycle.ListAll(ctx), nil
 }
 ```
 
