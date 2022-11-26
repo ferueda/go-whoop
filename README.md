@@ -26,10 +26,10 @@ import (
 
 func main() {
 	client := whoop.NewClient(nil)
-  ctx := context.Background()
+	ctx := context.Background()
 
-  // list all cycles for the authenticated user
-  cycles, err := client.Cycle.ListAll(ctx)
+	// list all cycles for the authenticated user
+	cycles, err := client.Cycle.ListAll(ctx)
 }
 
 ```
