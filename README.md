@@ -20,16 +20,14 @@ import "github.com/ferueda/go-whoop/whoop"
 ```
 Create a new client, then use the various services on the client to access different parts of the API. For example:
 ```go
-import (
-  "github.com/ferueda/go-whoop/whoop"
-)
+import "github.com/ferueda/go-whoop/whoop"
 
 func main() {
-	client := whoop.NewClient(nil)
-	ctx := context.Background()
+    client := whoop.NewClient(nil)
+    ctx := context.Background()
 
-	// list all cycles for the authenticated user
-	cycles, err := client.Cycle.ListAll(ctx)
+    // list all cycles for the authenticated user
+    cycles, err := client.Cycle.ListAll(ctx)
 }
 
 ```
@@ -48,16 +46,15 @@ import (
 )
 
 func main() {
-	ctx := context.Background()
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: "your_token"},
-	)
+    ctx := context.Background()
+    ts := oauth2.StaticTokenSource(
+        &oauth2.Token{AccessToken: "your_token"},
+    )
 
-	client := github.NewClient(oauth2.NewClient(ctx, ts))
-	cycles, err := client.Cycle.ListAll(ctx)
+    client := github.NewClient(oauth2.NewClient(ctx, ts))
+    cycles, err := client.Cycle.ListAll(ctx)
 }
 ```
-
 
 ## How to Contribute
 
