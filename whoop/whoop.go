@@ -13,6 +13,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/google/go-querystring/query"
 )
 
 const (
@@ -58,6 +60,44 @@ func NewClient(httpClient *http.Client) *Client {
 	c.shared.client = c
 	c.Cycle = (*CycleService)(&c.shared)
 	return c
+}
+
+// RequestParams represents a GET requests query parameters
+type RequestParams struct {
+	Start time.Time // Start time query filter
+	End   time.Time // End time query filter
+}
+
+// addParams adds parameters as URL query parameters to s.
+func addParams(s string, params *RequestParams) (string, error) {
+	if params == nil {
+		return s, nil
+	}
+
+	u, err := url.Parse(s)
+	if err != nil {
+		return s, err
+	}
+
+	var p struct {
+		Start string `url:"start,omitempty"`
+		End   string `url:"end,omitempty"`
+	}
+
+	if !params.Start.IsZero() {
+		p.Start = params.Start.Format(time.RFC3339)
+	}
+	if !params.End.IsZero() {
+		p.End = params.End.Format(time.RFC3339)
+	}
+
+	qs, err := query.Values(p)
+	if err != nil {
+		return s, err
+	}
+
+	u.RawQuery = qs.Encode()
+	return u.String(), nil
 }
 
 // newRequest creates a new API request with context. If specified,
@@ -112,8 +152,7 @@ func newResponse(r *http.Response) *Response {
 }
 
 // checkResponse checks the API response for errors, and returns them if any.
-// API response are considered an error if it has
-// a status 200 > code >299.
+// API response are considered an error if it has a status 200 > code >299.
 func checkResponse(r *http.Response) error {
 	if r.StatusCode >= 200 && r.StatusCode <= 299 {
 		return nil
