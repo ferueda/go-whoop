@@ -18,6 +18,39 @@ To install the library, simply
 ```go
 import "github.com/ferueda/go-whoop/whoop"
 ```
+Create a new client, then use the various services on the client to access different parts of the API. For example:
+```go
+client := whoop.NewClient(nil)
+ctx := context.Background()
+
+// list all cycles for the authenticated user
+cycles, err := client.Cycle.ListAll(ctx)
+```
+
+## Authentication
+The client does not handle authentication for you. Instead, you can provide `whoop.NewClient()` with an `http.Client` of your own that can handle authentication for you.
+
+The most common way is using the [OAuth2 package](https://pkg.go.dev/golang.org/x/oauth2).
+
+If you have an OAuth2 access token, you can use it with the OAuth2 package like:
+
+```go
+import (
+  "golang.org/x/oauth2"
+  "github.com/ferueda/go-whoop/whoop"
+)
+
+func main() {
+	ctx := context.Background()
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: "your_token"},
+	)
+
+  client := github.NewClient(oauth2.NewClient(ctx, ts))
+  cycles, err := client.Cycle.ListAll(ctx)
+}
+```
+
 
 ## How to Contribute
 
