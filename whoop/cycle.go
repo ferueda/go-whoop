@@ -2,6 +2,7 @@ package whoop
 
 import (
 	"context"
+	"fmt"
 	"time"
 )
 
@@ -44,22 +45,37 @@ type Cycle struct {
 	} `json:"score,omitempty"`
 }
 
+// Get a single physiological cycles by id.
+//
+// WHOOP API docs: https://developer.whoop.com/api#tag/Cycle/operation/getCycleById
+func (s *CycleService) GetOne(ctx context.Context, id string) (*Cycle, error) {
+	var cycle Cycle
+	u := fmt.Sprintf("%v/%v", cycleEndpoint, id)
+	if err := s.client.get(ctx, u, &cycle); err != nil {
+		return nil, err
+	}
+	return &cycle, nil
+}
+
+type ListAllResponse struct {
+	Records   []Cycle `json:"records"`
+	NextToken *string `json:"next_token"`
+}
+
 // ListAll lists all physiological cycles for the authenticated user.
 // Results are paginated and sorted by start time in descending order.
 //
 // WHOOP API docs: https://developer.whoop.com/api#tag/Cycle/operation/getCycleCollection
-func (s *CycleService) ListAll(ctx context.Context, params *RequestParams) ([]Cycle, error) {
+func (s *CycleService) ListAll(ctx context.Context, params *RequestParams) (*ListAllResponse, error) {
 	u, err := addParams(cycleEndpoint, params)
 	if err != nil {
 		return nil, err
 	}
 
-	var res struct {
-		Records   []Cycle `json:"records"`
-		NextToken *string `json:"next_token"`
-	}
-	if err = s.client.get(ctx, u, &res); err != nil {
+	var resp ListAllResponse
+	if err = s.client.get(ctx, u, &resp); err != nil {
 		return nil, err
 	}
-	return res.Records, nil
+
+	return &resp, nil
 }
