@@ -64,8 +64,10 @@ func NewClient(httpClient *http.Client) *Client {
 
 // RequestParams represents a GET requests query parameters
 type RequestParams struct {
-	Start time.Time // Start time query filter
-	End   time.Time // End time query filter
+	Start     time.Time // Start time query filter
+	End       time.Time // End time query filter
+	NextToken string    // Token to retrieve next page of records if any
+	Limit     int       // Limit the number of records returned by the API
 }
 
 // addParams adds parameters as URL query parameters to s.
@@ -80,10 +82,14 @@ func addParams(s string, params *RequestParams) (string, error) {
 	}
 
 	var p struct {
-		Start string `url:"start,omitempty"`
-		End   string `url:"end,omitempty"`
+		Start     string `url:"start,omitempty"`
+		End       string `url:"end,omitempty"`
+		NextToken string `url:"nextToken,omitempty"`
+		Limit     int    `url:"limit,omitempty"`
 	}
 
+	p.NextToken = params.NextToken
+	p.Limit = params.Limit
 	if !params.Start.IsZero() {
 		p.Start = params.Start.Format(time.RFC3339)
 	}
