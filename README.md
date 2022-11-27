@@ -27,11 +27,10 @@ ctx := context.Background()
 cycles, _ := client.Cycle.ListAll(ctx, nil)
 
 ```
-Some API methods have optional parameters that can be passed. For example:
+Some API methods have optional parameters that can be passed to filter results by dates. For example:
 ```go
 client := whoop.NewClient(nil)
 ctx := context.Background()
-
 
 // list all cycles for the authenticated user in the last 36 hours
 params := whoop.RequestParams{Start: time.Now().Add(time.Hour * -36)}
@@ -58,7 +57,7 @@ func main() {
         &oauth2.Token{AccessToken: "your_token"},
     )
 
-    client := github.NewClient(oauth2.NewClient(ctx, ts))
+    client := whoop.NewClient(oauth2.NewClient(ctx, ts))
     cycles, _ := client.Cycle.ListAll(ctx, nil)
 }
 ```
