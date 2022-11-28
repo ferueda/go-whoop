@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	baseURL    = "https://api.prod.whoop.com/"
+	baseURL    = "https://api.prod.whoop.com/developer/"
 	apiVersion = "v1"
 
 	headerRateLimit     = "X-RateLimit-Limit"
@@ -109,7 +109,7 @@ func addParams(s string, params *RequestParams) (string, error) {
 // newRequest creates a new API request with context. If specified,
 // the value pointed to by body is JSON encoded and included in the request body.
 func (c *Client) newRequest(ctx context.Context, method, url string, body interface{}) (*http.Request, error) {
-	u, err := c.baseURL.Parse("developer" + "/" + c.apiVersion + url)
+	u, err := c.baseURL.Parse(c.apiVersion + url)
 	if err != nil {
 		return nil, err
 	}
@@ -250,7 +250,6 @@ func (c *Client) do(req *http.Request, v any) error {
 	if err != nil {
 		return err
 	}
-
 	defer resp.Body.Close()
 	err = checkResponse(resp)
 	response := newResponse(resp)
