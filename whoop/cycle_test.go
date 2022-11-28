@@ -160,7 +160,7 @@ func TestCycleService_GetOne(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	resp, err := client.Cycle.GetOne(ctx, "1")
+	resp, err := client.Cycle.GetOne(ctx, 1)
 
 	if err != nil {
 		t.Fatalf("Cycle.GetOne(): expected nil error, got %#v", err)

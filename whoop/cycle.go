@@ -48,7 +48,7 @@ type Cycle struct {
 // Get a single physiological cycles by id.
 //
 // WHOOP API docs: https://developer.whoop.com/api#tag/Cycle/operation/getCycleById
-func (s *CycleService) GetOne(ctx context.Context, id string) (*Cycle, error) {
+func (s *CycleService) GetOne(ctx context.Context, id int) (*Cycle, error) {
 	var cycle Cycle
 	u := fmt.Sprintf("%v/%v", cycleEndpoint, id)
 	if err := s.client.get(ctx, u, &cycle); err != nil {
