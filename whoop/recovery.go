@@ -18,19 +18,36 @@ type RecoveryService service
 //
 // WHOOP API docs: https://developer.whoop.com/docs/developing/user-data/recovery
 type Recovery struct {
-	CycleID    int        `json:"cycle_id"`
-	SleepID    int        `json:"sleep_id"`
-	UserID     int        `json:"user_id"`
-	CreatedAt  *time.Time `json:"created_at,omitempty"`
-	UpdatedAt  *time.Time `json:"updated_at,omitempty"`
-	ScoreState *string    `json:"score_state,omitempty"`
-	Score      struct {
-		UserCalibrating  bool    `json:"user_calibrating,omitempty"`
-		RecoveryScore    float64 `json:"recovery_score,omitempty"`
+	// Unique identifier for the sleep activity
+	CycleID int `json:"cycle_id"`
+	// The WHOOP User who performed the sleep activity
+	SleepID int `json:"sleep_id"`
+	// The WHOOP User for the recovery
+	UserID int `json:"user_id"`
+	// The time the recovery was recorded in WHOOP
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+	// The time the recovery was last updated in WHOOP
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
+	// Enum: "SCORED", "PENDING_SCORE", or "UNSCORABLE".
+	// SCORED means the cycle was scored and the measurement values will be present.
+	// PENDING_SCORE means WHOOP is currently evaluating the cycle.
+	// UNSCORABLE means this activity could not be scored for some reason.
+	ScoreState *string `json:"score_state,omitempty"`
+	// WHOOP's measurements and evaluation of the recovery. Only present if the Recovery State is SCORED
+	Score struct {
+		// True if the user is still calibrating and not enough data is available in WHOOP to provide an accurate recovery.
+		UserCalibrating bool `json:"user_calibrating,omitempty"`
+		// Percentage (0-100%) that reflects how well prepared the user's body is to take on Strain.
+		// The Recovery score is a measure of the user body's "return to baseline" after a stressor.
+		RecoveryScore float64 `json:"recovery_score,omitempty"`
+		// The user's resting heart rate.
 		RestingHeartRate float64 `json:"resting_heart_rate,omitempty"`
-		HrvRmssdMilli    float64 `json:"hrv_rmssd_milli,omitempty"`
-		Spo2Percentage   float64 `json:"spo2_percentage,omitempty"`
-		SkinTempCelsius  float64 `json:"skin_temp_celsius,omitempty"`
+		// The user's Heart Rate Variability measured using Root Mean Square of Successive Differences (RMSSD), in milliseconds.
+		HrvRmssdMilli float64 `json:"hrv_rmssd_milli,omitempty"`
+		// The percentage of oxygen in the user's blood. Only present if the user is on 4.0 or greater.
+		Spo2Percentage float64 `json:"spo2_percentage,omitempty"`
+		// The user's skin temperature, in Celsius. Only present if the user is on 4.0 or greater.
+		SkinTempCelsius float64 `json:"skin_temp_celsius,omitempty"`
 	} `json:"score,omitempty"`
 }
 

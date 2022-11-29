@@ -40,10 +40,15 @@ type Cycle struct {
 	ScoreState *string `json:"score_state,omitempty"`
 	// WHOOP's measurements and evaluation of the cycle. Only present if the Cycle State is SCORED
 	Score struct {
-		Strain           float64 `json:"strain,omitempty"`
-		Kilojoule        float64 `json:"kilojoule,omitempty"`
+		// WHOOP metric of the cardiovascular load - the level of strain on the user's cardiovascular
+		// system based on the user's heart rate during the cycle. Strain is scored on a scale from 0 to 21.
+		Strain float64 `json:"strain,omitempty"`
+		// Kilojoules the user expended during the cycle.
+		Kilojoule float64 `json:"kilojoule,omitempty"`
+		// The user's average heart rate during the cycle.
 		AverageHeartRate float64 `json:"average_heart_rate,omitempty"`
-		MaxHeartRate     float64 `json:"max_heart_rate,omitempty"`
+		// The user's max heart rate during the cycle.
+		MaxHeartRate float64 `json:"max_heart_rate,omitempty"`
 	} `json:"score,omitempty"`
 }
 
