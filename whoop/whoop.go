@@ -41,7 +41,8 @@ type Client struct {
 	shared service // Reuse a single struct instead of allocating one for each service on the heap.
 
 	// Services used for talking to different parts of the API.
-	Cycle *CycleService
+	Cycle    *CycleService
+	Recovery *RecoveryService
 }
 
 // NewClient returns a new WHOOP API client.
@@ -59,6 +60,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c := &Client{http: httpClient, baseURL: baseURL, apiVersion: apiVersion}
 	c.shared.client = c
 	c.Cycle = (*CycleService)(&c.shared)
+	c.Recovery = (*RecoveryService)(&c.shared)
 	return c
 }
 
