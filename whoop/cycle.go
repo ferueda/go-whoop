@@ -15,6 +15,8 @@ const (
 type CycleService service
 
 // Cycle represents a member's activity in the context of a Physiological Cycle.
+//
+// WHOOP API docs: https://developer.whoop.com/docs/developing/user-data/cycle
 type Cycle struct {
 	// Unique identifier for the physiological cycle.
 	ID int `json:"id"`
@@ -40,12 +42,12 @@ type Cycle struct {
 	Score struct {
 		Strain           float64 `json:"strain,omitempty"`
 		Kilojoule        float64 `json:"kilojoule,omitempty"`
-		AverageHeartRate int     `json:"average_heart_rate,omitempty"`
-		MaxHeartRate     int     `json:"max_heart_rate,omitempty"`
+		AverageHeartRate float64 `json:"average_heart_rate,omitempty"`
+		MaxHeartRate     float64 `json:"max_heart_rate,omitempty"`
 	} `json:"score,omitempty"`
 }
 
-// Get a single physiological cycles by id.
+// Get a single physiological cycle by id.
 //
 // WHOOP API docs: https://developer.whoop.com/api#tag/Cycle/operation/getCycleById
 func (s *CycleService) GetOne(ctx context.Context, id int) (*Cycle, error) {
@@ -57,7 +59,7 @@ func (s *CycleService) GetOne(ctx context.Context, id int) (*Cycle, error) {
 	return &cycle, nil
 }
 
-type ListAllResponse struct {
+type CycleListAllResp struct {
 	Records   []Cycle `json:"records"`
 	NextToken *string `json:"next_token"`
 }
@@ -66,13 +68,13 @@ type ListAllResponse struct {
 // Results are paginated and sorted by start time in descending order.
 //
 // WHOOP API docs: https://developer.whoop.com/api#tag/Cycle/operation/getCycleCollection
-func (s *CycleService) ListAll(ctx context.Context, params *RequestParams) (*ListAllResponse, error) {
+func (s *CycleService) ListAll(ctx context.Context, params *RequestParams) (*CycleListAllResp, error) {
 	u, err := addParams(cycleEndpoint, params)
 	if err != nil {
 		return nil, err
 	}
 
-	var resp ListAllResponse
+	var resp CycleListAllResp
 	if err = s.client.get(ctx, u, &resp); err != nil {
 		return nil, err
 	}
