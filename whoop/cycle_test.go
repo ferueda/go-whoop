@@ -18,38 +18,38 @@ func TestCycleService_ListAll(t *testing.T) {
 		fmt.Fprint(w, `
 		{
 			"records": [
-					{
-							"id": 1,
-							"user_id": 1,
-							"created_at": "2022-11-27T16:34:36.226Z",
-							"updated_at": "2022-11-27T16:34:36.226Z",
-							"start": "2022-11-27T08:17:45.687Z",
-							"end": null,
-							"timezone_offset": "-08:00",
-							"score_state": "SCORED",
-							"score": {
-									"strain": 4.0210266,
-									"kilojoule": 6350.486,
-									"average_heart_rate": 52,
-									"max_heart_rate": 115
-							}
-					},
-					{
-							"id": 2,
-							"user_id": 1,
-							"created_at": "2022-11-26T15:17:19.570Z",
-							"updated_at": "2022-11-27T16:34:41.484Z",
-							"start": "2022-11-26T06:49:28.470Z",
-							"end": "2022-11-27T08:17:45.687Z",
-							"timezone_offset": "-08:00",
-							"score_state": "SCORED",
-							"score": {
-									"strain": 6.1106668,
-									"kilojoule": 9490.08,
-									"average_heart_rate": 55,
-									"max_heart_rate": 121
-							}
-					}
+				{
+						"id": 1,
+						"user_id": 1,
+						"created_at": "2022-11-27T16:34:36.226Z",
+						"updated_at": "2022-11-27T16:34:36.226Z",
+						"start": "2022-11-27T08:17:45.687Z",
+						"end": null,
+						"timezone_offset": "-08:00",
+						"score_state": "SCORED",
+						"score": {
+								"strain": 4.0210266,
+								"kilojoule": 6350.486,
+								"average_heart_rate": 52,
+								"max_heart_rate": 115
+						}
+				},
+				{
+						"id": 2,
+						"user_id": 1,
+						"created_at": "2022-11-26T15:17:19.570Z",
+						"updated_at": "2022-11-27T16:34:41.484Z",
+						"start": "2022-11-26T06:49:28.470Z",
+						"end": "2022-11-27T08:17:45.687Z",
+						"timezone_offset": "-08:00",
+						"score_state": "SCORED",
+						"score": {
+								"strain": 6.1106668,
+								"kilojoule": 9490.08,
+								"average_heart_rate": 55,
+								"max_heart_rate": 121
+						}
+				}
 			],
 			"next_token": null
 	}`)
@@ -66,6 +66,18 @@ func TestCycleService_ListAll(t *testing.T) {
 	}
 	if resp.NextToken != nil {
 		t.Errorf("Cycle.ListAll(): expected next_token nil, got %v", resp.NextToken)
+	}
+	if resp.Records[0].ID != 1 {
+		t.Errorf("Cycle.ListAll(): expected record[0] to have ID 1, got %v", resp.Records[0].ID)
+	}
+	if resp.Records[1].ID != 2 {
+		t.Errorf("Cycle.ListAll(): expected record[0] to have ID 1, got %v", resp.Records[0].ID)
+	}
+	if resp.Records[0].UserID != 1 {
+		t.Errorf("Cycle.ListAll(): expected record[0] to have UserID 1, got %v", resp.Records[0].UserID)
+	}
+	if resp.Records[1].UserID != 1 {
+		t.Errorf("Cycle.ListAll(): expected record[0] to have UserID 1, got %v", resp.Records[0].UserID)
 	}
 }
 
@@ -91,20 +103,20 @@ func TestCycleService_ListAll_with_params(t *testing.T) {
 		{
 			"records": [
 					{
-							"id": 1,
-							"user_id": 1,
-							"created_at": "2022-11-27T16:34:36.226Z",
-							"updated_at": "2022-11-27T16:34:36.226Z",
-							"start": "2022-11-27T08:17:45.687Z",
-							"end": null,
-							"timezone_offset": "-08:00",
-							"score_state": "SCORED",
-							"score": {
-									"strain": 4.0210266,
-									"kilojoule": 6350.486,
-									"average_heart_rate": 52,
-									"max_heart_rate": 115
-							}
+						"id": 1,
+						"user_id": 1,
+						"created_at": "2022-11-27T16:34:36.226Z",
+						"updated_at": "2022-11-27T16:34:36.226Z",
+						"start": "2022-11-27T08:17:45.687Z",
+						"end": null,
+						"timezone_offset": "-08:00",
+						"score_state": "SCORED",
+						"score": {
+								"strain": 4.0210266,
+								"kilojoule": 6350.486,
+								"average_heart_rate": 52,
+								"max_heart_rate": 115
+						}
 					}
 			],
 			"next_token": "test_token"
@@ -119,10 +131,16 @@ func TestCycleService_ListAll_with_params(t *testing.T) {
 		t.Fatalf("Cycle.ListAll(): expected nil error, got %#v", err)
 	}
 	if len(resp.Records) != 1 {
-		t.Errorf("Cycle.ListAll(): expected 2 records, got %v", len(resp.Records))
+		t.Errorf("Cycle.ListAll(): expected 1 records, got %v", len(resp.Records))
 	}
 	if resp.NextToken == nil {
 		t.Errorf("Cycle.ListAll(): expected next_token == test_token, got %v", resp.NextToken)
+	}
+	if resp.Records[0].ID != 1 {
+		t.Errorf("Cycle.ListAll(): expected record[0] to have ID 1, got %v", resp.Records[0].ID)
+	}
+	if resp.Records[0].UserID != 1 {
+		t.Errorf("Cycle.ListAll(): expected record[0] to have UserID 1, got %v", resp.Records[0].UserID)
 	}
 }
 
@@ -141,20 +159,20 @@ func TestCycleService_GetOne(t *testing.T) {
 		}
 		fmt.Fprint(w, `
 			{
-					"id": 1,
-					"user_id": 1,
-					"created_at": "2022-11-27T16:34:36.226Z",
-					"updated_at": "2022-11-27T16:34:36.226Z",
-					"start": "2022-11-27T08:17:45.687Z",
-					"end": null,
-					"timezone_offset": "-08:00",
-					"score_state": "SCORED",
-					"score": {
-							"strain": 4.0210266,
-							"kilojoule": 6350.486,
-							"average_heart_rate": 52,
-							"max_heart_rate": 115
-					}
+				"id": 1,
+				"user_id": 1,
+				"created_at": "2022-11-27T16:34:36.226Z",
+				"updated_at": "2022-11-27T16:34:36.226Z",
+				"start": "2022-11-27T08:17:45.687Z",
+				"end": null,
+				"timezone_offset": "-08:00",
+				"score_state": "SCORED",
+				"score": {
+						"strain": 4.0210266,
+						"kilojoule": 6350.486,
+						"average_heart_rate": 52,
+						"max_heart_rate": 115
+				}
 			}
 	`)
 	})
@@ -166,6 +184,9 @@ func TestCycleService_GetOne(t *testing.T) {
 		t.Fatalf("Cycle.GetOne(): expected nil error, got %#v", err)
 	}
 	if resp.ID != 1 {
-		t.Errorf("Cycle.GetOne(): expected id 1, got %v", resp.ID)
+		t.Errorf("Cycle.GetOne(): expected ID 1, got %v", resp.ID)
+	}
+	if resp.UserID != 1 {
+		t.Errorf("Cycle.GetOne(): expected UserID 1, got %v", resp.UserID)
 	}
 }
