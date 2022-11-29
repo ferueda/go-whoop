@@ -33,3 +33,20 @@ type Recovery struct {
 		SkinTempCelsius  float64 `json:"skin_temp_celsius,omitempty"`
 	} `json:"score,omitempty"`
 }
+
+// Get a single recovery record for the given cycle.
+//
+// WHOOP API docs: https://developer.whoop.com/api#tag/Cycle/operation/getCycleById
+func (s *RecoveryService) GetOneByCycleId(ctx context.Context, id int) (*Recovery, error) {
+	var recovery Recovery
+	u := fmt.Sprintf("%v/%v%v", cycleEndpoint, id, recoveryEndpoint)
+	if err := s.client.get(ctx, u, &recovery); err != nil {
+		return nil, err
+	}
+	return &recovery, nil
+}
+
+type RecoveryListAllResp struct {
+	Records   []Recovery `json:"records"`
+	NextToken *string    `json:"next_token"`
+}
