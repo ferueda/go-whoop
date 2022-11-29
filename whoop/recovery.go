@@ -51,7 +51,7 @@ type Recovery struct {
 	} `json:"score,omitempty"`
 }
 
-// Get a single recovery record for the given cycle.
+// Get a single recovery record for the the specified cycle id.
 //
 // WHOOP API docs: https://developer.whoop.com/api#tag/Cycle/operation/getCycleById
 func (s *RecoveryService) GetOneByCycleId(ctx context.Context, id int) (*Recovery, error) {
