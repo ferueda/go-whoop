@@ -50,3 +50,21 @@ type RecoveryListAllResp struct {
 	Records   []Recovery `json:"records"`
 	NextToken *string    `json:"next_token"`
 }
+
+// ListAll lists all recovery records for the authenticated user.
+// Results are paginated and sorted by start time in descending order.
+//
+// WHOOP API docs: https://developer.whoop.com/api#tag/Recovery/operation/getRecoveryCollection
+func (s *RecoveryService) ListAll(ctx context.Context, params *RequestParams) (*RecoveryListAllResp, error) {
+	u, err := addParams(recoveryEndpoint, params)
+	if err != nil {
+		return nil, err
+	}
+
+	var resp RecoveryListAllResp
+	if err = s.client.get(ctx, u, &resp); err != nil {
+		return nil, err
+	}
+
+	return &resp, nil
+}
