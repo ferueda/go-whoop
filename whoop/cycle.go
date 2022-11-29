@@ -52,7 +52,7 @@ type Cycle struct {
 	} `json:"score,omitempty"`
 }
 
-// Get a single physiological cycle the specified id.
+// Get a single physiological cycle record for the specified id.
 //
 // WHOOP API docs: https://developer.whoop.com/api#tag/Cycle/operation/getCycleById
 func (s *CycleService) GetOne(ctx context.Context, id int) (*Cycle, error) {
@@ -69,7 +69,7 @@ type CycleListAllResp struct {
 	NextToken *string `json:"next_token"`
 }
 
-// ListAll lists all physiological cycles for the authenticated user.
+// ListAll lists all physiological cycle records for the authenticated user.
 // Results are paginated and sorted by start time in descending order.
 //
 // WHOOP API docs: https://developer.whoop.com/api#tag/Cycle/operation/getCycleCollection
