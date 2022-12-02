@@ -44,6 +44,7 @@ type Client struct {
 	Cycle    *CycleService
 	Recovery *RecoveryService
 	Sleep    *SleepService
+	User     *UserService
 }
 
 // NewClient returns a new WHOOP API client.
@@ -63,6 +64,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.Cycle = (*CycleService)(&c.shared)
 	c.Recovery = (*RecoveryService)(&c.shared)
 	c.Sleep = (*SleepService)(&c.shared)
+	c.User = (*UserService)(&c.shared)
 	return c
 }
 
