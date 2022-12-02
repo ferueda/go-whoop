@@ -86,7 +86,7 @@ recoveries, err := client.Recovery.ListAll(ctx, nil)
 ```
 
 ### Workout Service
-Get a single single workout activity record for the specified id.
+Get a single workout activity record for the specified id.
 ```go
 workout, err := client.Workout.GetOne(ctx, 1)
 ```
