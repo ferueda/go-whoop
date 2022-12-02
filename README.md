@@ -25,17 +25,76 @@ ctx := context.Background()
 
 // list all cycles for the authenticated user
 cycles, _ := client.Cycle.ListAll(ctx, nil)
-
 ```
+
+### Query filters
+
 Some API methods have optional parameters that can be passed to filter results by dates, limit the number of results returned, or provied the token for the next page of results. For example:
+
 ```go
 client := whoop.NewClient(nil)
 ctx := context.Background()
 
-// list all cycles for the authenticated user in the last 36 hours
-params := whoop.RequestParams{Start: time.Now().Add(time.Hour * -36)}
-cycles, _ := client.Cycle.ListAll(ctx, &params)
+// List all cycle records for the authenticated user with query filters.
+params := whoop.RequestParams{
+		Start:     time.Now().Add(time.Hour * -48),
+		End:       time.Now(),
+		Limit:     4,
+		NextToken: "abc"}
+
+cycles, err := client.Cycle.ListAll(ctx, &params)
 ```
+
+### User Service
+Get the profile for the authenticated user.
+```go
+profile, err := client.User.GetProfile(ctx)
+```
+Get the body measurements for the authenticated user.
+```go
+bodyMeasurement, err := client.User.GetBodyMeasurement(ctx)
+```
+
+### Cycle Service
+Get a single physiological cycle record for the specified id.
+```go
+cycle, err := client.Cycle.GetOne(ctx, 1)
+```
+List all physiological cycle records for the authenticated user.
+```go
+cycles, err := client.Cycle.ListAll(ctx, nil)
+```
+
+### Sleep Service
+Get a single single sleep record for the specified id.
+```go
+sleep, err := client.Sleep.GetOne(ctx, 1)
+```
+List all sleep records for the authenticated user.
+```go
+sleeps, err := client.Sleep.ListAll(ctx, nil)
+```
+
+### Recovery Service
+Get a single recovery record for the specified cycle id.
+```go
+recovery, err := client.Recovery.GetOneByCycleId(ctx, 1)
+```
+List all recovery records for the authenticated user.
+```go
+recoveries, err := client.Recovery.ListAll(ctx, nil)
+```
+
+### Workout Service
+Get a single single workout activity record for the specified id.
+```go
+workout, err := client.Workout.GetOne(ctx, 1)
+```
+List all workout activity records for the authenticated user.
+```go
+workouts, err := client.Workout.ListAll(ctx, nil)
+```
+
 ## Authentication
 The client does not handle authentication for you. Instead, you can provide `whoop.NewClient()` with an `http.Client` of your own that can handle authentication for you.
 
