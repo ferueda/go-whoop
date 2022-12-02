@@ -18,37 +18,22 @@ type CycleService service
 //
 // WHOOP API docs: https://developer.whoop.com/docs/developing/user-data/cycle
 type Cycle struct {
-	// Unique identifier for the physiological cycle.
-	ID int `json:"id"`
-	// The WHOOP User for the physiological cycle.
-	UserID int `json:"user_id"`
-	// The time the cycle was recorded in WHOOP.
-	CreatedAt *time.Time `json:"created_at,omitempty"`
-	// The time the cycle was last updated in WHOOP.
-	UpdatedAt *time.Time `json:"updated_at,omitempty"`
-	// Start time bound of the cycle.
-	Start *time.Time `json:"start,omitempty"`
-	// End time bound of the cycle. If not present, the user is currently in this cycle.
-	End *time.Time `json:"end,omitempty"`
-	// The user's timezone offset at the time the cycle was recorded.
-	// Follows format for Time Zone Designator (TZD) - '+hh:mm', '-hh:mm', or 'Z'.
-	TimezoneOffset *string `json:"timezone_offset,omitempty"`
-	// Enum: "SCORED", "PENDING_SCORE", or "UNSCORABLE".
-	// SCORED means the cycle was scored and the measurement values will be present.
-	// PENDING_SCORE means WHOOP is currently evaluating the cycle.
-	// UNSCORABLE means this activity could not be scored for some reason.
-	ScoreState *string `json:"score_state,omitempty"`
-	// WHOOP's measurements and evaluation of the cycle. Only present if the Cycle State is SCORED
+	ID     int `json:"id"`      // Unique identifier for the physiological cycle.
+	UserID int `json:"user_id"` // The User for the physiological cycle.
+
+	CreatedAt *time.Time `json:"created_at,omitempty"` // Time the cycle was recorded.
+	UpdatedAt *time.Time `json:"updated_at,omitempty"` // Time the cycle was last updated.
+	Start     *time.Time `json:"start,omitempty"`      // Start time bound of the cycle.
+	End       *time.Time `json:"end,omitempty"`        // End time bound of the cycle. If not present, the user is currently in this cycle.
+
+	TimezoneOffset *string `json:"timezone_offset,omitempty"` // Timezone offset at the time the cycle was recorded.
+	ScoreState     *string `json:"score_state,omitempty"`     // "SCORED", "PENDING_SCORE", or "UNSCORABLE".
+
 	Score struct {
-		// WHOOP metric of the cardiovascular load - the level of strain on the user's cardiovascular
-		// system based on the user's heart rate during the cycle. Strain is scored on a scale from 0 to 21.
-		Strain float64 `json:"strain,omitempty"`
-		// Kilojoules the user expended during the cycle.
-		Kilojoule float64 `json:"kilojoule,omitempty"`
-		// The user's average heart rate during the cycle.
-		AverageHeartRate float64 `json:"average_heart_rate,omitempty"`
-		// The user's max heart rate during the cycle.
-		MaxHeartRate float64 `json:"max_heart_rate,omitempty"`
+		Strain           float64 `json:"strain,omitempty"`             // Level of strain for the user. Scored from 0 to 21.
+		Kilojoule        float64 `json:"kilojoule,omitempty"`          // Kilojoules the user expended during the cycle.
+		AverageHeartRate float64 `json:"average_heart_rate,omitempty"` // The user's average heart rate during the cycle.
+		MaxHeartRate     float64 `json:"max_heart_rate,omitempty"`     // The user's max heart rate during the cycle.
 	} `json:"score,omitempty"`
 }
 

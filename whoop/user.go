@@ -17,16 +17,19 @@ type UserService service
 //
 // WHOOP API docs: https://developer.whoop.com/docs/developing/user-data/user
 type UserProfile struct {
-	ID        int     `json:"user_id"`
-	Email     *string `json:"email,omitempty"`
-	FirstName *string `json:"first_name,omitempty"`
-	LastName  *string `json:"last_name,omitempty"`
+	ID        int     `json:"user_id"`              // The WHOOP User.
+	Email     *string `json:"email,omitempty"`      // User's Email.
+	FirstName *string `json:"first_name,omitempty"` // User's First Name.
+	LastName  *string `json:"last_name,omitempty"`  // User's Last Name
 }
 
+// Body measurements about the user, such as their weight and height.
+//
+// WHOOP API docs: https://developer.whoop.com/docs/developing/user-data/user#body-measurements
 type BodyMeasurement struct {
-	HeightMeter    float64 `json:"height_meter,omitempty"`
-	WeightKilogram float64 `json:"weight_kilogram,omitempty"`
-	MaxHeartRate   int     `json:"max_heart_rate,omitempty"`
+	HeightMeter    float64 `json:"height_meter,omitempty"`    // User's height in meters.
+	WeightKilogram float64 `json:"weight_kilogram,omitempty"` // User's weight in kilograms.
+	MaxHeartRate   int     `json:"max_heart_rate,omitempty"`  // The max heart rate WHOOP calculated for the user.
 }
 
 // GetProfile retrieves the profile for the authenticated user.
