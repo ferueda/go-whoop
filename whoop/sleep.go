@@ -21,12 +21,12 @@ type Sleep struct {
 	ID     int `json:"id"`      // Unique identifier for the sleep activity
 	UserID int `json:"user_id"` // User who performed the sleep activity
 
-	CreatedAt *time.Time `json:"created_at,omitempty"` // Time the cycle was recorded.
-	UpdatedAt *time.Time `json:"updated_at,omitempty"` // Time the cycle was last updated.
-	Start     *time.Time `json:"start,omitempty"`      // Start time bound of the cycle.
-	End       *time.Time `json:"end,omitempty"`        // End time bound of the cycle. If not present, the user is currently in this cycle.
+	CreatedAt *time.Time `json:"created_at,omitempty"` // Time the sleep was recorded.
+	UpdatedAt *time.Time `json:"updated_at,omitempty"` // Time the sleep was last updated.
+	Start     *time.Time `json:"start,omitempty"`      // Start time bound of the sleep.
+	End       *time.Time `json:"end,omitempty"`        // End time bound of the sleep.
 
-	TimezoneOffset *string `json:"timezone_offset,omitempty"` // // Timezone offset at the time the cycle was recorded.
+	TimezoneOffset *string `json:"timezone_offset,omitempty"` // // Timezone offset at the time the sleep was recorded.
 	Nap            bool    `json:"nap,omitempty"`             // If true, this sleep activity was a nap for the user.
 	ScoreState     *string `json:"score_state,omitempty"`     // "SCORED", "PENDING_SCORE", or "UNSCORABLE".
 
