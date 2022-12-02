@@ -14,6 +14,9 @@ const (
 // endpoints of the API.
 type SleepService service
 
+// Sleep represents a sleep performance for a given user.
+//
+// WHOOP API docs: https://developer.whoop.com/docs/developing/user-data/sleep
 type Sleep struct {
 	ID             int        `json:"id"`
 	UserID         int        `json:"user_id"`
@@ -48,7 +51,7 @@ type Sleep struct {
 	} `json:"score,omitempty"`
 }
 
-// Get a single sleep record for the specified id.
+// GetOne retrieves a single sleep record for the specified id.
 //
 // WHOOP API docs: https://developer.whoop.com/api#tag/Sleep/operation/getSleepById
 func (s *SleepService) GetOne(ctx context.Context, id int) (*Sleep, error) {

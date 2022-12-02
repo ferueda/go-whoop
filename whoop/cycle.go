@@ -52,7 +52,7 @@ type Cycle struct {
 	} `json:"score,omitempty"`
 }
 
-// Get a single physiological cycle record for the specified id.
+// GetOne retrieves a single physiological cycle record for the specified id.
 //
 // WHOOP API docs: https://developer.whoop.com/api#tag/Cycle/operation/getCycleById
 func (s *CycleService) GetOne(ctx context.Context, id int) (*Cycle, error) {
