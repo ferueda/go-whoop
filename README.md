@@ -27,7 +27,7 @@ ctx := context.Background()
 cycles, _ := client.Cycle.ListAll(ctx, nil)
 
 ```
-Some API methods have optional parameters that can be passed to filter results by dates. For example:
+Some API methods have optional parameters that can be passed to filter results by dates, limit the number of results returned, or provied the token for the next page of results. For example:
 ```go
 client := whoop.NewClient(nil)
 ctx := context.Background()
