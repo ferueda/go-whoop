@@ -17,6 +17,7 @@ type UserService service
 //
 // WHOOP API docs: https://developer.whoop.com/docs/developing/user-data/user
 type UserProfile struct {
+	ID        int     `json:"user_id"`
 	Email     *string `json:"email,omitempty"`
 	FirstName *string `json:"first_name,omitempty"`
 	LastName  *string `json:"last_name,omitempty"`
