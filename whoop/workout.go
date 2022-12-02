@@ -18,8 +18,8 @@ type WorkoutService service
 //
 // WHOOP API docs: https://developer.whoop.com/docs/developing/user-data/workout
 type Workout struct {
-	ID     int `json:"id"`      // Unique identifier for the physiological cycle.
-	UserID int `json:"user_id"` // The User for the physiological cycle.
+	ID     int `json:"id"`      // Unique identifier for the workout activity.
+	UserID int `json:"user_id"` // The User for the workout activity.
 
 	CreatedAt *time.Time `json:"created_at,omitempty"` // Time the workout was recorded.
 	UpdatedAt *time.Time `json:"updated_at,omitempty"` // Time the workout was last updated.
