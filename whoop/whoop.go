@@ -247,7 +247,7 @@ func (c *Client) checkRateLimit(req *http.Request) *RateLimitError {
 
 // do sends the request to the API.
 // The response body will be unmarshalled into v,
-// or return an error if an API error ocurred.
+// or return an error if an API error occurred.
 func (c *Client) do(req *http.Request, v any) error {
 	if err := c.checkRateLimit(req); err != nil {
 		return err
